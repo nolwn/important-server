@@ -7,7 +7,7 @@ import (
 )
 
 type postGreeting struct {
-	greeting string
+	Greeting string `json:"greeting"`
 }
 
 var database = make([]string, 0, 10)
@@ -46,6 +46,6 @@ func addGreeting(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprintf(w, "Internal Server Error")
 	}
 
-	database = append(database, newGreeting.greeting)
+	database = append(database, newGreeting.Greeting)
 	fmt.Fprintf(w, "Created")
 }
