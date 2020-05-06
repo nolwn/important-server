@@ -7,25 +7,11 @@ import (
 	"net/http"
 )
 
-var fieldCounter = 0
+func main() {
+	http.HandleFunc("/greeting", getGreetingHandlers)
+	err := http.ListenAndServe(":3000", nil)
 
-type postGreeting struct {
-	Greeting string `json:"greeting"`
-	Language string `json:"language"`
-	IsFormal bool   `json:"isFormal"`
-	NumWords int    `json:"numWords"`
-}
-
-type greetingRecord struct {
-	ID       int    `json:"id"`
-	Greeting string `json:"greeting"`
-	Language string `json:"language"`
-	IsFormal bool   `json:"isFormal"`
-	NumWords int    `json:"numWords"`
-}
-
-type createdResponse struct {
-	ID int `json:"id"`
+	log.Fatal(err)
 }
 
 func makeNewRecord(pg *postGreeting, gr *greetingRecord) {
@@ -44,47 +30,6 @@ type errorResponse struct {
 
 var database = make([]greetingRecord, 0, 10)
 
-func main() {
-	http.HandleFunc("/greeting", getGreetingHandlers)
-	err := http.ListenAndServe(":3000", nil)
-
-	log.Fatal(err)
-}
-
-func getGreetingHandlers(w http.ResponseWriter, req *http.Request) {
-	switch req.Method {
-	case http.MethodGet:
-		getGreetings(w, req)
-	case http.MethodPost:
-		addGreeting(w, req)
-	}
-}
-
-func getGreetings(w http.ResponseWriter, req *http.Request) {
-	encodeResponse(w, req, database, http.StatusOK)
-}
-
-func addGreeting(w http.ResponseWriter, req *http.Request) {
-	var newGreeting postGreeting
-	err := decodeRequestBody(req, &newGreeting)
-
-	if err != nil {
-		var res errorResponse = errorResponse{Error: "Internal Server Error"}
-		encodedRes, _ := json.Marshal(res)
-
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write(encodedRes)
-	} else {
-		var newRecord greetingRecord
-		makeNewRecord(&newGreeting, &newRecord)
-
-		response := createdResponse{ID: newRecord.ID}
-		database = append(database, newRecord)
-
-		encodeResponse(w, req, response, http.StatusCreated)
-	}
-}
-
 func decodeRequestBody(req *http.Request, i interface{}) error {
 	err := json.NewDecoder(req.Body).Decode(&i)
 	return err
@@ -99,5 +44,6 @@ func encodeResponse(w http.ResponseWriter, req *http.Request, i interface{}, cod
 		w.WriteHeader(code)
 		w.Write(bytes)
 	}
+
 	return bytes, err
 }
