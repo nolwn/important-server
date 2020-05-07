@@ -9,6 +9,7 @@ import (
 
 func main() {
 	http.HandleFunc("/greeting", getGreetingHandlers)
+	http.HandleFunc("/cards", getCardHandlers)
 	err := http.ListenAndServe(":3000", nil)
 
 	log.Fatal(err)
