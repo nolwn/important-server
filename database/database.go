@@ -69,17 +69,17 @@ func Add(resource interface{}) (types.CreatedResponse, error) {
 }
 
 // Get returns all greetings in the database.
-func Get(i interface{}) error {
+func Get(i interface{}) (interface{}, error) {
 	switch i.(type) {
-	case []types.PostGreeting:
-		i = &greetingTable
-		return nil
+	case []types.GreetingRecord:
+		i = greetingTable
+		return i, nil
 
-	case []types.Card:
-		i = &cardTable
-		return nil
+	case []types.CardRecord:
+		i = cardTable.Table
+		return i, nil
 
 	default:
-		return errors.New("could not find a corresponding type")
+		return nil, errors.New("could not find a corresponding type")
 	}
 }

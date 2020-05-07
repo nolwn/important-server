@@ -19,9 +19,8 @@ func getGreetingHandlers(w http.ResponseWriter, req *http.Request) {
 
 func getGreetings(w http.ResponseWriter, req *http.Request) {
 	var greetings []types.GreetingRecord
-
-	database.Get(greetings)
-	encodeResponse(w, req, greetings, http.StatusOK)
+	i, _ := database.Get(greetings)
+	encodeResponse(w, req, i, http.StatusOK)
 }
 
 func addGreeting(w http.ResponseWriter, req *http.Request) {
@@ -53,8 +52,8 @@ func getCardHandlers(w http.ResponseWriter, req *http.Request) {
 
 func getCards(w http.ResponseWriter, req *http.Request) {
 	var cards []types.CardRecord
-	database.Get(cards)
-	encodeResponse(w, req, cards, http.StatusOK)
+	i, _ := database.Get(cards)
+	encodeResponse(w, req, i, http.StatusOK)
 }
 
 func addCard(w http.ResponseWriter, req *http.Request) {

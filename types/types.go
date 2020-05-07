@@ -21,10 +21,10 @@ type CreatedResponse struct {
 
 // Card is a struct to represent a Set® card
 type Card struct {
-	Shape   int `json:"shape"`
-	Number  int `json:"number"`
-	Color   int `color:"color"`
-	Pattern int `pattern:"pattern"`
+	Shape   string `json:"shape"`
+	Number  int    `json:"number"`
+	Color   string `color:"color"`
+	Pattern string `pattern:"pattern"`
 }
 
 // CardRecord is a record retrieved from the database.
