@@ -3,6 +3,9 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/nolwn/important-server/database"
+	"github.com/nolwn/important-server/types"
 )
 
 func getGreetingHandlers(w http.ResponseWriter, req *http.Request) {
@@ -15,11 +18,12 @@ func getGreetingHandlers(w http.ResponseWriter, req *http.Request) {
 }
 
 func getGreetings(w http.ResponseWriter, req *http.Request) {
-	encodeResponse(w, req, database, http.StatusOK)
+	greetings := database.GetGreetings()
+	encodeResponse(w, req, greetings, http.StatusOK)
 }
 
 func addGreeting(w http.ResponseWriter, req *http.Request) {
-	var newGreeting postGreeting
+	var newGreeting types.PostGreeting
 	err := decodeRequestBody(req, &newGreeting)
 
 	if err != nil {
@@ -29,11 +33,8 @@ func addGreeting(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write(encodedRes)
 	} else {
-		var newRecord greetingRecord
-		makeNewRecord(&newGreeting, &newRecord)
-
-		response := createdResponse{ID: newRecord.ID}
-		database = append(database, newRecord)
+		newRecord := database.AddGreeting(newGreeting)
+		response := types.CreatedResponse{ID: newRecord.ID}
 
 		encodeResponse(w, req, response, http.StatusCreated)
 	}

@@ -14,21 +14,9 @@ func main() {
 	log.Fatal(err)
 }
 
-func makeNewRecord(pg *postGreeting, gr *greetingRecord) {
-	gr.ID = fieldCounter
-	gr.Greeting = pg.Greeting
-	gr.Language = pg.Language
-	gr.IsFormal = pg.IsFormal
-	gr.NumWords = pg.NumWords
-
-	fieldCounter++
-}
-
 type errorResponse struct {
 	Error string `json:"error"`
 }
-
-var database = make([]greetingRecord, 0, 10)
 
 func decodeRequestBody(req *http.Request, i interface{}) error {
 	err := json.NewDecoder(req.Body).Decode(&i)
